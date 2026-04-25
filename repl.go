@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/amiulam/pokedex-go/internal/pokeapi"
+	"github.com/amiulam/pokedex-go/internal/pokecache"
 )
 
 type cliCommand struct {
@@ -17,6 +18,7 @@ type cliCommand struct {
 
 type config struct {
 	pokeapiClient   pokeapi.Client
+	pokeCache       pokecache.Cache
 	nextLocationURL *string
 	prevLocationURL *string
 }

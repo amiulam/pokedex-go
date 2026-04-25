@@ -1,14 +1,39 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+
+	"github.com/amiulam/pokedex-go/internal/pokeapi"
 )
 
 func commandMap(cfg *config) error {
-	locationResponse, err := cfg.pokeapiClient.GetLocationArea(cfg.nextLocationURL)
-	if err != nil {
-		return err
+	url := "https://pokeapi.co/api/v2/location-area"
+	if cfg.nextLocationURL != nil {
+		url = *cfg.nextLocationURL
+	}
+
+	var locationResponse pokeapi.LocationAreaResponse
+	data, ok := cfg.pokeCache.Get(url)
+	if ok {
+		err := json.Unmarshal(data, &locationResponse)
+		if err != nil {
+			return err
+		}
+	} else {
+		resp, err := cfg.pokeapiClient.GetLocationArea(&url)
+		if err != nil {
+			return err
+		}
+		locationResponse = resp
+
+		marshalledData, err := json.Marshal(locationResponse)
+		if err != nil {
+			return err
+		}
+
+		cfg.pokeCache.Add(url, marshalledData)
 	}
 
 	cfg.nextLocationURL = locationResponse.Next
@@ -26,9 +51,26 @@ func commandMapb(cfg *config) error {
 		return errors.New("you're on the first page")
 	}
 
-	locationResponse, err := cfg.pokeapiClient.GetLocationArea(cfg.prevLocationURL)
-	if err != nil {
-		return err
+	var locationResponse pokeapi.LocationAreaResponse
+	data, ok := cfg.pokeCache.Get(*cfg.prevLocationURL)
+	if ok {
+		err := json.Unmarshal(data, &locationResponse)
+		if err != nil {
+			return err
+		}
+	} else {
+		resp, err := cfg.pokeapiClient.GetLocationArea(cfg.prevLocationURL)
+		if err != nil {
+			return err
+		}
+		locationResponse = resp
+
+		marshalledData, err := json.Marshal(locationResponse)
+		if err != nil {
+			return err
+		}
+
+		cfg.pokeCache.Add(*cfg.prevLocationURL, marshalledData)
 	}
 
 	cfg.nextLocationURL = locationResponse.Next
