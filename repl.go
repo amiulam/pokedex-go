@@ -36,18 +36,19 @@ func startRepl(cfg *config) {
 			break
 		}
 
-		text := scanner.Text()
-		words := cleanInput(text)
+		words := cleanInput(scanner.Text())
 		if len(words) == 0 {
 			continue
 		}
 
 		commandName := words[0]
-		if len(words) > 1 && commandName == "explore" {
+
+		if len(words) > 1 {
 			cfg.locationName = words[1]
-		}
-		if len(words) > 1 && (commandName == "catch" || commandName == "inspect") {
 			cfg.pokemonName = words[1]
+		} else {
+			cfg.locationName = ""
+			cfg.pokemonName = ""
 		}
 
 		command, ok := getCommands()[commandName]
@@ -72,42 +73,42 @@ func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"help": {
 			name:        "help",
-			description: "Displays a help message",
+			description: "Displays a list of available commands",
 			callback:    commandHelp,
 		},
 		"map": {
 			name:        "map",
-			description: "Display next page of location area",
+			description: "Displays the next 20 location areas in the Pokemon world",
 			callback:    commandMap,
-		},
-		"pokedex": {
-			name:        "pokedex",
-			description: "Display current pokemon inventory",
-			callback:    commandPokedex,
 		},
 		"mapb": {
 			name:        "mapb",
-			description: "Display previous page of location area",
+			description: "Displays the previous 20 location areas in the Pokemon world",
 			callback:    commandMapb,
 		},
 		"explore": {
 			name:        "explore",
-			description: "Display detail of location area: explore <area_name>",
+			description: "Lists all Pokemon located in a specific area. Usage: explore <area_name>",
 			callback:    commandExplore,
 		},
 		"catch": {
 			name:        "catch",
-			description: "Catch a pokemon: catch <pokemon_name>",
+			description: "Attempts to catch a specific Pokemon. Usage: catch <pokemon_name>",
 			callback:    commandCatch,
 		},
 		"inspect": {
 			name:        "inspect",
-			description: "Inspect caught pokemon: inspect <pokemon_name>",
+			description: "View details of a Pokemon you have caught. Usage: inspect <pokemon_name>",
 			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Lists all the Pokemon you have caught and stored in your Pokedex",
+			callback:    commandPokedex,
 		},
 		"exit": {
 			name:        "exit",
-			description: "Exit the Pokedex",
+			description: "Closes the Pokedex and exits the application",
 			callback:    commandExit,
 		},
 	}
