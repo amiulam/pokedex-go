@@ -14,7 +14,7 @@ func commandMap(cfg *config) error {
 		url = *cfg.nextLocationURL
 	}
 
-	var locationResponse pokeapi.LocationAreaResponse
+	var locationResponse pokeapi.LocationAreasResponse
 	data, ok := cfg.pokeCache.Get(url)
 	if ok {
 		err := json.Unmarshal(data, &locationResponse)
@@ -22,7 +22,7 @@ func commandMap(cfg *config) error {
 			return err
 		}
 	} else {
-		resp, err := cfg.pokeapiClient.GetLocationArea(&url)
+		resp, err := cfg.pokeapiClient.GetLocationAreas(&url)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ func commandMapb(cfg *config) error {
 		return errors.New("you're on the first page")
 	}
 
-	var locationResponse pokeapi.LocationAreaResponse
+	var locationResponse pokeapi.LocationAreasResponse
 	data, ok := cfg.pokeCache.Get(*cfg.prevLocationURL)
 	if ok {
 		err := json.Unmarshal(data, &locationResponse)
@@ -59,7 +59,7 @@ func commandMapb(cfg *config) error {
 			return err
 		}
 	} else {
-		resp, err := cfg.pokeapiClient.GetLocationArea(cfg.prevLocationURL)
+		resp, err := cfg.pokeapiClient.GetLocationAreas(cfg.prevLocationURL)
 		if err != nil {
 			return err
 		}

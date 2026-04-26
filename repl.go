@@ -21,6 +21,7 @@ type config struct {
 	pokeCache       pokecache.Cache
 	nextLocationURL *string
 	prevLocationURL *string
+	locationName    string
 }
 
 func startRepl(cfg *config) {
@@ -39,6 +40,9 @@ func startRepl(cfg *config) {
 		}
 
 		commandName := words[0]
+		if len(words) > 1 {
+			cfg.locationName = words[1]
+		}
 
 		command, ok := getCommands()[commandName]
 		if !ok {
@@ -74,6 +78,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Display previous page of location area",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Display detail of location area: explore <area_name>",
+			callback:    commandExplore,
 		},
 		"exit": {
 			name:        "exit",

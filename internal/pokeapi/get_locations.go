@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type LocationAreaResponse struct {
+type LocationAreasResponse struct {
 	Count    int     `json:"count"`
 	Next     *string `json:"next"`
 	Previous *string `json:"previous"`
@@ -16,7 +16,7 @@ type LocationAreaResponse struct {
 	} `json:"results"`
 }
 
-func (c *Client) GetLocationArea(pageUrl *string) (LocationAreaResponse, error) {
+func (c *Client) GetLocationAreas(pageUrl *string) (LocationAreasResponse, error) {
 	url := "https://pokeapi.co/api/v2/location-area"
 	if pageUrl != nil {
 		url = *pageUrl
@@ -24,19 +24,19 @@ func (c *Client) GetLocationArea(pageUrl *string) (LocationAreaResponse, error) 
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return LocationAreaResponse{}, err
+		return LocationAreasResponse{}, err
 	}
 	defer resp.Body.Close()
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return LocationAreaResponse{}, err
+		return LocationAreasResponse{}, err
 	}
 
-	locationResponse := LocationAreaResponse{}
+	locationResponse := LocationAreasResponse{}
 	err = json.Unmarshal(data, &locationResponse)
 	if err != nil {
-		return LocationAreaResponse{}, err
+		return LocationAreasResponse{}, err
 	}
 
 	return locationResponse, nil
