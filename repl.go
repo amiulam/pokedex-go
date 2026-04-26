@@ -8,6 +8,7 @@ import (
 
 	"github.com/amiulam/pokedex-go/internal/pokeapi"
 	"github.com/amiulam/pokedex-go/internal/pokecache"
+	"github.com/amiulam/pokedex-go/internal/pokemon_inventory"
 )
 
 type cliCommand struct {
@@ -17,11 +18,13 @@ type cliCommand struct {
 }
 
 type config struct {
-	pokeapiClient   pokeapi.Client
-	pokeCache       pokecache.Cache
-	nextLocationURL *string
-	prevLocationURL *string
-	locationName    string
+	pokeapiClient    pokeapi.Client
+	pokeCache        *pokecache.Cache
+	pokemonInventory *pokemon_inventory.PokemonInventory
+	nextLocationURL  *string
+	prevLocationURL  *string
+	locationName     string
+	pokemonName      string
 }
 
 func startRepl(cfg *config) {
@@ -40,8 +43,11 @@ func startRepl(cfg *config) {
 		}
 
 		commandName := words[0]
-		if len(words) > 1 {
+		if len(words) > 1 && commandName == "explore" {
 			cfg.locationName = words[1]
+		}
+		if len(words) > 1 && (commandName == "catch" || commandName == "inspect") {
+			cfg.pokemonName = words[1]
 		}
 
 		command, ok := getCommands()[commandName]
@@ -83,6 +89,16 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Display detail of location area: explore <area_name>",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a pokemon: catch <pokemon_name>",
+			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect caught pokemon: inspect <pokemon_name>",
+			callback:    commandInspect,
 		},
 		"exit": {
 			name:        "exit",
