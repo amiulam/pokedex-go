@@ -80,6 +80,11 @@ func getCommands() map[string]cliCommand {
 			description: "Display next page of location area",
 			callback:    commandMap,
 		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Display current pokemon inventory",
+			callback:    commandPokedex,
+		},
 		"mapb": {
 			name:        "mapb",
 			description: "Display previous page of location area",

@@ -34,3 +34,12 @@ func (p *PokemonInventory) Get(name string) (Pokemon, error) {
 
 	return pokemon, nil
 }
+
+func (p *PokemonInventory) List() []Pokemon {
+	pokemons := []Pokemon{}
+	for _, pokemon := range p.data {
+		pokemons = append(pokemons, pokemon)
+	}
+
+	return pokemons
+}
